@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+           http://www.springframework.org/schema/util
+  		   http://www.springframework.org/schema/util/spring-util-2.0.xsd">
+     
+    <!-- PERMITE INICIALIZAR LAS PROPIEDADES DEL ARCHIVO PROPERTIES -->
+    <context:property-placeholder location="classpath:archivo.properties" />
+           	
+	<bean id="producerJms" class="com.activemq.queue.producer.ProducerJmsQueueImpl" />
+
+	<bean id="senderService" class="com.activemq.queue.sender.SenderServiceImpl" />
+
+	<bean id="queueRecibirSolicitud" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg value="cola.matias" />
+	</bean>
+
+	<bean id="MessageListenerRespuestaCola" class="com.activemq.queue.recepcion.RecepcionColaServiceImpl" />
+
+	<bean id="listenerServiceQueueBaseImpl"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="concurrentConsumers" value="${cola.consumers}" /> <!-- Cantidad de Hilos que va ejecutar... -->
+		<property name="sessionTransacted" value="true" />
+		<property name="connectionFactory" ref="cachingConnectionFactoryPf" />
+		<property name="destination" ref="queueRecibirSolicitud" />
+		<property name="messageListener" ref="MessageListenerRespuestaCola" />
+		<property name="autoStartup" value="true" /> <!-- Al iniciar ya empieza a escuchar, sino setear false -->
+	</bean>  
+
+           
+</beans>
