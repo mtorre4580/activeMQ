@@ -71,7 +71,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
-			<version>1.5.8</version>
+			<version>1.7.28</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
